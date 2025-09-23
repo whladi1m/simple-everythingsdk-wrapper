@@ -16,8 +16,25 @@ if "%EVERYTHING_LIB%"=="" (
 
 echo [INFO] Building search_tool.exe from src\...
 
-REM Compile all .cpp files inside src folder
-g++ -DUNICODE -D_UNICODE -D_WIN32_WINNT=0x0600 src\*.cpp -I"%EVERYTHING_INCLUDE%" -L"%EVERYTHING_LIB%" -lEverything64 -o search_tool.exe
+REM Collect all .cpp files in src folder into a variable
+setlocal enabledelayedexpansion
+set "SOURCES="
+for %%f in (src\*.cpp) do (
+    if defined SOURCES (
+        set "SOURCES=!SOURCES! %%f"
+    ) else (
+        set "SOURCES=%%f"
+    )
+)
+
+REM Check if any .cpp files were found
+if not defined SOURCES (
+    echo [ERROR] No .cpp files found in src\ folder!
+    exit /b 1
+)
+
+REM Compile using all collected .cpp files
+g++ -DUNICODE -D_UNICODE -D_WIN32_WINNT=0x0600 !SOURCES! -I"%EVERYTHING_INCLUDE%" -L"%EVERYTHING_LIB%" -lEverything64 -o search_tool.exe
 
 if errorlevel 1 (
     echo [ERROR] Build failed!
@@ -25,4 +42,5 @@ if errorlevel 1 (
 )
 
 echo [INFO] Build successful! Output: search_tool.exe
+endlocal
 exit /b 0

@@ -33,7 +33,7 @@ int main() {
 
         // Regex search
         searcher.reset();
-        searcher.setSearch("project_\\d{4}\\.txt");
+        searcher.setSearch("[^\s]*\.someThing(?:\.[^\s]*)*");
         searcher.setRegex(true);
         if (searcher.execute()) {
             std::cout << "\nRegex search found " << searcher.getResultCount() << " results" << std::endl;
